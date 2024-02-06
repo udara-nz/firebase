@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { auth } from "../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "../config/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 
 export const Auth = () => {
   const [email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+
+  console.log(auth?.currentUser.photoURL);
 
   const signIn = async () => {
     try {
@@ -13,6 +19,23 @@ export const Auth = () => {
       console.log(err);
     }
   };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div>
       <input placeholder="Emal..." onChange={(e) => setEmail(e.target.value)} />
@@ -22,6 +45,10 @@ export const Auth = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={signIn}> Sign In </button>
+
+      <button onClick={signInWithGoogle}> Sign In with Google </button>
+
+      <button onClick={logout}> Log Out </button>
     </div>
   );
 };
